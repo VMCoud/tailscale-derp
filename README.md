@@ -24,25 +24,33 @@ I do recommend to use `docker-compose`, here is an example:
 version: "3.3"
 services:
   derp:
-    image: tailscale-derper
+    image: tailscale-derp:latest
     restart: always
-    hostname: your_derp_hostname
-    container_name: derp
+    hostname: derper-server
+    container_name: tailscale-derper-1
     logging:
       options:
         max-size: "5m"
     ports:
-      - 443:443
-      - 3478:3478/udp
+      - "61443:443"
+      - "61443:3478/udp"
     volumes:
-      - "./certs/cert.crt:/app/cert.crt"
-      - "./certs/cert.key:/app/cert.key"
-      - "./data:/var/lib/tailscale"
+      - "/home/ssl:/app/certs" # Mount SSL certificates
+      - "derper-tailscale-1:/var/lib/tailscale" # Use named volume for Tailscale data
     environment:
-      - HOST_NAME=your_derp_hostname
-      - CERT_DIR=/app
-      - TS_AUTHKEY=your_auth_key
+      - TS_AUTHKEY=tskey-auth-xxx
       - TS_STATE_DIR=/var/lib/tailscale
+      - DERP_STUN_PORT=3478
+      - DERP_VERIFY_CLIENTS=true
+      - DERP_DOMAIN=derper-1.poliwhirl.cn
+      - DERP_CERT_DIR=/app/certs
+      - DERP_CERT_MODE=manual
+      - DERP_STUN=true
+      - DERP_ADDR=:443
+      - DERP_HTTP_PORT=80
+
+volumes:
+  derper-tailscale-1: # Define the named volume
 ```
 
 If you are using nginx to proxy the traffic, map container 443 port to other local port, or use docker network to handle proxy traffic, for example:
