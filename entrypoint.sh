@@ -1,17 +1,17 @@
 #!/bin/sh
 
-if [ -z $HOST_NAME ];then
+if [ -z =$DERP_DOMAIN ];then
     echo "[!] Host name not set"
     exit 1
 else
-    echo "[+] Host Name set to $HOST_NAME"
+    echo "[+] Host Name set to =$DERP_DOMAIN"
 fi
 
-if [ -z $CERT_DIR ];then
+if [ -z $DERP_CERT_DIR ];then
     echo "[!] Cert dir not set"
     exit 1
 else
-    echo "[+] Cert dir set to $CERT_DIR"
+    echo "[+] Cert dir set to $DERP_CERT_DIR"
 fi
 
 if [ -z $TS_AUTHKEY ];then
@@ -29,7 +29,7 @@ fi
 if [ ! -f "/var/run/tailscale/tailscaled.sock" ];then
     ln -s /tmp/tailscaled.sock /var/run/tailscale/tailscaled.sock
 fi
-/app/derper -hostname $HOST_NAME -certmode manual -certdir $CERT_DIR -verify-clients &
+/app/derper --hostname=$DERP_DOMAIN --certmode=$DERP_CERT_MODE --certdir=$DERP_CERT_DIR --a=$DERP_ADDR --stun=$DERP_STUN --stun-port=$DERP_STUN_PORT --http-port=$DERP_HTTP_PORT --verify-clients=$DERP_VERIFY_CLIENTS &
 /usr/local/bin/containerboot &
 echo "[+] Service started, health check service started..."
 sleep 4s
