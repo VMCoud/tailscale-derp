@@ -35,14 +35,14 @@ services:
       - "61443:443"
       - "61443:3478/udp"
     volumes:
-      - "/home/ssl:/app/certs" # Mount SSL certificates
-      - "derper-tailscale-1:/var/lib/tailscale" # Use named volume for Tailscale data
+      - "/home/ssl:/app/certs" 
+      - "derper-tailscale-1:/var/lib/tailscale"
     environment:
       - TS_AUTHKEY=tskey-auth-xxx
       - TS_STATE_DIR=/var/lib/tailscale
       - DERP_STUN_PORT=3478
       - DERP_VERIFY_CLIENTS=true
-      - DERP_DOMAIN=derper-1.poliwhirl.cn
+      - DERP_DOMAIN=derper-1.xxx.cn
       - DERP_CERT_DIR=/app/certs
       - DERP_CERT_MODE=manual
       - DERP_STUN=true
@@ -50,7 +50,7 @@ services:
       - DERP_HTTP_PORT=80
 
 volumes:
-  derper-tailscale-1: # Define the named volume
+  derper-tailscale-1:
 ```
 
 If you are using nginx to proxy the traffic, map container 443 port to other local port, or use docker network to handle proxy traffic, for example:
